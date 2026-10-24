@@ -1,0 +1,5 @@
+---
+- import_playbook: 01_test_connectivity.yml
+- import_playbook: 02_respaldo_configuracion.yml
+- import_playbook: 03_configurar_switches.yml
+- import_playbook: 04_configurar_router.yml

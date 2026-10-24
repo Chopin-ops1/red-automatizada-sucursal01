@@ -1,0 +1,27 @@
+---
+- name: Respaldar configuracion actual de routers y switches Cisco
+  hosts: routers_cisco:switches_cisco
+  gather_facts: false
+
+  tasks:
+    - name: Asegurar que el directorio de respaldos exista en el nodo de control
+      ansible.builtin.file:
+        path: "{{ playbook_dir }}/../respaldos"
+        state: directory
+        mode: "0755"
+      delegate_to: localhost
+      run_once: true
+
+    - name: Obtener la configuracion en ejecucion (running-config)
+      cisco.ios.ios_command:
+        commands:
+          - show running-config
+      register: configuracion_actual
+      changed_when: false
+
+    - name: Guardar el respaldo en Ubuntu Server
+      ansible.builtin.copy:
+        content: "{{ configuracion_actual.stdout[0] }}"
+        dest: "{{ playbook_dir }}/../respaldos/{{ inventory_hostname }}-running.cfg"
+        mode: "0600"
+      delegate_to: localhost

@@ -1,0 +1,30 @@
+---
+- name: Automatizar enrutamiento Inter-VLAN en Router Cisco (Router-on-a-Stick)
+  hosts: routers_cisco
+  gather_facts: false
+
+  vars_files:
+    - "{{ playbook_dir }}/../variables/router_vars.yml"
+
+  tasks:
+    - name: Habilitar interfaz fisica principal
+      cisco.ios.ios_config:
+        parents: "interface {{ router_config.interfaz_fisica }}"
+        lines:
+          - "description {{ router_config.descripcion }}"
+          - "no ip address"
+          - "no shutdown"
+
+    - name: Configurar subinterfaces para enrutamiento Inter-VLAN (ROAS)
+      cisco.ios.ios_config:
+        parents: "interface {{ router_config.interfaz_fisica }}.{{ item.id }}"
+        lines:
+          - "description {{ item.descripcion }}"
+          - "{{ 'encapsulation dot1Q ' ~ item.vlan_id ~ ' native' if item.nativa else 'encapsulation dot1Q ' ~ item.vlan_id }}"
+          - "ip address {{ item.ip_address }} {{ item.netmask }}"
+          - "no shutdown"
+      loop: "{{ router_config.subinterfaces }}"
+
+    - name: Guardar la configuracion del router en NVRAM
+      cisco.ios.ios_config:
+        save_when: modified

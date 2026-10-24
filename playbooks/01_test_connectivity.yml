@@ -1,0 +1,15 @@
+---
+- name: Probar conectividad SSH con equipos de red
+  hosts: routers_cisco:switches_cisco
+  gather_facts: false
+
+  tasks:
+    - name: Consultar version y estado basico del dispositivo
+      cisco.ios.ios_command:
+        commands:
+          - show version | include uptime
+      register: salida_version
+
+    - name: Mostrar estado de conexion exitosa
+      ansible.builtin.debug:
+        msg: "Conexion exitosa con {{ inventory_hostname }} ({{ ansible_host }}): {{ salida_version.stdout[0] }}"

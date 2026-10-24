@@ -1,0 +1,25 @@
+---
+router_config:
+  interfaz_fisica: GigabitEthernet0/0
+  descripcion: "Enlace troncal hacia SW-SUC-01-CORE"
+  subinterfaces:
+    - id: "10"
+      vlan_id: 10
+      descripcion: "Gateway VLAN 10 - Usuarios 10"
+      ip_address: 192.168.10.1
+      netmask: 255.255.255.0
+      nativa: false
+
+    - id: "20"
+      vlan_id: 20
+      descripcion: "Gateway VLAN 20 - Usuarios 20"
+      ip_address: 192.168.20.1
+      netmask: 255.255.255.0
+      nativa: false
+
+    - id: "99"
+      vlan_id: 99
+      descripcion: "Gateway VLAN 99 - Gestion y Nativa"
+      ip_address: 192.168.99.1
+      netmask: 255.255.255.0
+      nativa: true
