@@ -22,10 +22,10 @@
         lines:
           - "description {{ item.descripcion }}"
           - "switchport trunk encapsulation dot1q"
-          - "switchport mode trunk"
           - "switchport trunk native vlan {{ item.vlan_nativa }}"
           - "switchport trunk allowed vlan {{ item.vlans_permitidas }}"
-          - "no shutdown"
+          - "switchport mode trunk"
+        match: line
       loop: "{{ switches_config[inventory_hostname].troncales | default([]) }}"
       when:
         - switches_config[inventory_hostname] is defined
@@ -36,15 +36,14 @@
         parents: "interface {{ item.interfaz }}"
         lines:
           - "description {{ item.descripcion }}"
-          - "switchport mode access"
           - "switchport access vlan {{ item.vlan }}"
-          - "spanning-tree portfast"
-          - "no shutdown"
+          - "switchport mode access"
+        match: line
       loop: "{{ switches_config[inventory_hostname].puertos_acceso | default([]) }}"
       when:
         - switches_config[inventory_hostname] is defined
         - switches_config[inventory_hostname].puertos_acceso is defined
 
-    - name: Guardar la configuracion en NVRAM
+    - name: Guardar la configuracion en NVRAM si hubo cambios
       cisco.ios.ios_config:
         save_when: modified

@@ -1,5 +1,5 @@
 ---
-- name: Respaldar configuracion actual de routers y switches Cisco
+- name: Respaldar configuracion actual y estado de VLANs en Cisco IOS
   hosts: routers_cisco:switches_cisco
   gather_facts: false
 
@@ -19,9 +19,25 @@
       register: configuracion_actual
       changed_when: false
 
-    - name: Guardar el respaldo en Ubuntu Server
+    - name: Guardar el respaldo de running-config en el servidor de automatizacion
       ansible.builtin.copy:
         content: "{{ configuracion_actual.stdout[0] }}"
         dest: "{{ playbook_dir }}/../respaldos/{{ inventory_hostname }}-running.cfg"
-        mode: "0600"
+        mode: "0644"
+      delegate_to: localhost
+
+    - name: Obtener el estado de las VLANs (solo switches)
+      cisco.ios.ios_command:
+        commands:
+          - show vlan brief
+      register: estado_vlans
+      when: "'switches_cisco' in group_names"
+      changed_when: false
+
+    - name: Guardar el estado de las VLANs en el servidor de automatizacion
+      ansible.builtin.copy:
+        content: "{{ estado_vlans.stdout[0] }}"
+        dest: "{{ playbook_dir }}/../respaldos/{{ inventory_hostname }}-vlan.txt"
+        mode: "0644"
+      when: "'switches_cisco' in group_names"
       delegate_to: localhost
