@@ -1,0 +1,31 @@
+sucursal_02_config:
+  sede: Sucursal 02
+  bloque_origen: 10.20.0.0/23
+  vlans:
+  - id: 10
+    nombre: ADMINISTRACION
+    red: 10.20.0.0
+    prefijo: 26
+    mascara: 255.255.255.192
+    gateway: 10.20.0.1
+    rango_hosts: 10.20.0.2 - 10.20.0.62
+    capacidad_hosts: 62
+  - id: 20
+    nombre: OPERACION
+    red: 10.20.0.64
+    prefijo: 27
+    mascara: 255.255.255.224
+    gateway: 10.20.0.65
+    rango_hosts: 10.20.0.66 - 10.20.0.94
+    capacidad_hosts: 30
+  - id: 99
+    nombre: GESTION
+    red: 10.20.0.96
+    prefijo: 28
+    mascara: 255.255.255.240
+    gateway: 10.20.0.97
+    rango_hosts: 10.20.0.98 - 10.20.0.110
+    capacidad_hosts: 14
+  resumen_asignacion:
+    ips_utilizadas: 112
+    ips_disponibles: 400

@@ -1,0 +1,17 @@
+equipo,condicion_evaluada,resultado,evidencia_usada,detalle_diferencia
+R-SUC-01,Subinterfaz Gi0/0.10 (Gateway 192.168.10.1/24),CUMPLE,r_suc_01-running.cfg,Conforme al diseno
+R-SUC-01,Subinterfaz Gi0/0.20 (Gateway 192.168.20.1/24),CUMPLE,r_suc_01-running.cfg,Conforme al diseno
+R-SUC-01,Interfaz Gestion L3 (IP 192.168.99.1/24),CUMPLE,r_suc_01-running.cfg,Conforme al diseno
+R-SUC-01,Enrutamiento IP Unicast (ROAS),CUMPLE,r_suc_01-running.cfg,Conforme al diseno
+SW-SUC-01-CORE,Existencia y estado VLAN 10 (USUARIOS_VLAN10),CUMPLE,sw_suc_01_core-vlan.txt,Conforme al diseno
+SW-SUC-01-CORE,Existencia y estado VLAN 20 (USUARIOS_VLAN20),CUMPLE,sw_suc_01_core-vlan.txt,Conforme al diseno
+SW-SUC-01-CORE,Existencia y estado VLAN 99 (GESTION),CUMPLE,sw_suc_01_core-vlan.txt,Conforme al diseno
+SW-SUC-01-CORE,"Troncal Gi0/0 -> R-SUC-01 (dot1q, Nativa 99)",CUMPLE,sw_suc_01_core-running.cfg,Conforme al diseno
+SW-SUC-01-CORE,Troncal Gi1/2 -> SW-SUC-01-ACC1 (Nativa 99),CUMPLE,sw_suc_01_core-running.cfg,Conforme al diseno
+SW-SUC-01-CORE,SVI Vlan99 de Gestion (192.168.99.2/24),CUMPLE,sw_suc_01_core-running.cfg,Conforme al diseno
+SW-SUC-01-ACC1,Existencia y estado VLAN 10 (USUARIOS_VLAN10),CUMPLE,sw_suc_01_acc1-vlan.txt,Conforme al diseno
+SW-SUC-01-ACC1,Existencia y estado VLAN 20 (USUARIOS_VLAN20),CUMPLE,sw_suc_01_acc1-vlan.txt,Conforme al diseno
+SW-SUC-01-ACC1,Existencia y estado VLAN 99 (GESTION),CUMPLE,sw_suc_01_acc1-vlan.txt,Conforme al diseno
+SW-SUC-01-ACC1,Troncal Gi0/0 -> SW-SUC-01-CORE (Nativa 99),CUMPLE,sw_suc_01_acc1-running.cfg,Conforme al diseno
+SW-SUC-01-ACC1,Puerto Acceso Gi0/3 -> Switch1 (VLAN 99 PC8),CUMPLE,sw_suc_01_acc1-running.cfg,Conforme al diseno
+SW-SUC-01-ACC1,SVI Vlan99 de Gestion (192.168.99.3/24),CUMPLE,sw_suc_01_acc1-running.cfg,Conforme al diseno

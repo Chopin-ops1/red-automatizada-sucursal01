@@ -1,0 +1,177 @@
+---
+# Playbook para Prototipo 1: Validacion antes y despues de un cambio
+# Obtiene evidencias PRE, aplica cambio no disruptivo y obtiene evidencias POST.
+
+- name: Fase 1 - Recolectar evidencias PRE-CAMBIO en dispositivos de red
+  hosts: routers_cisco:switches_cisco
+  gather_facts: no
+  tasks:
+    - name: Asegurar directorio evidencias/pre_cambio en el nodo de control
+      ansible.builtin.file:
+        path: "{{ playbook_dir }}/../evidencias/pre_cambio"
+        state: directory
+        mode: "0755"
+      run_once: true
+      delegate_to: localhost
+
+    - name: PRE - Obtener configuracion en ejecucion (running-config)
+      cisco.ios.ios_command:
+        commands: "show running-config"
+      register: pre_running
+
+    - name: PRE - Guardar running-config en evidencias/pre_cambio
+      ansible.builtin.copy:
+        content: "{{ pre_running.stdout[0] }}"
+        dest: "{{ playbook_dir }}/../evidencias/pre_cambio/{{ inventory_hostname }}-running.cfg"
+        mode: "0644"
+      delegate_to: localhost
+
+    - name: PRE - Obtener show ip interface brief
+      cisco.ios.ios_command:
+        commands: "show ip interface brief"
+      register: pre_ip_int
+
+    - name: PRE - Guardar show ip interface brief
+      ansible.builtin.copy:
+        content: "{{ pre_ip_int.stdout[0] }}"
+        dest: "{{ playbook_dir }}/../evidencias/pre_cambio/{{ inventory_hostname }}-ip_int.txt"
+        mode: "0644"
+      delegate_to: localhost
+
+    - name: PRE - Obtener show vlan brief (switches)
+      cisco.ios.ios_command:
+        commands: "show vlan brief"
+      register: pre_vlan
+      when: "'switches_cisco' in group_names"
+
+    - name: PRE - Guardar show vlan brief (switches)
+      ansible.builtin.copy:
+        content: "{{ pre_vlan.stdout[0] }}"
+        dest: "{{ playbook_dir }}/../evidencias/pre_cambio/{{ inventory_hostname }}-vlan.txt"
+        mode: "0644"
+      when: "'switches_cisco' in group_names"
+      delegate_to: localhost
+
+    - name: PRE - Obtener show interfaces trunk (switches)
+      cisco.ios.ios_command:
+        commands: "show interfaces trunk"
+      register: pre_trunk
+      when: "'switches_cisco' in group_names"
+
+    - name: PRE - Guardar show interfaces trunk (switches)
+      ansible.builtin.copy:
+        content: "{{ pre_trunk.stdout[0] }}"
+        dest: "{{ playbook_dir }}/../evidencias/pre_cambio/{{ inventory_hostname }}-trunk.txt"
+        mode: "0644"
+      when: "'switches_cisco' in group_names"
+      delegate_to: localhost
+
+    - name: PRE - Obtener show ip route (routers)
+      cisco.ios.ios_command:
+        commands: "show ip route"
+      register: pre_routes
+      when: "'routers_cisco' in group_names"
+
+    - name: PRE - Guardar show ip route (routers)
+      ansible.builtin.copy:
+        content: "{{ pre_routes.stdout[0] }}"
+        dest: "{{ playbook_dir }}/../evidencias/pre_cambio/{{ inventory_hostname }}-routes.txt"
+        mode: "0644"
+      when: "'routers_cisco' in group_names"
+      delegate_to: localhost
+
+- name: Fase 2 - Aplicar cambio no disruptivo documentado en conmutador Core
+  hosts: sw_suc_01_core
+  gather_facts: no
+  tasks:
+    - name: Actualizar descripcion de puerto de acceso Gi0/1 (PC2 - VLAN 10)
+      cisco.ios.ios_config:
+        lines:
+          - description "PC2 - VLAN 10 [PROD_AUDITADO_RFC2026]"
+        parents: "interface GigabitEthernet0/1"
+        match: line
+
+    - name: Actualizar descripcion de enlace troncal Gi0/0 hacia Router
+      cisco.ios.ios_config:
+        lines:
+          - description "Troncal hacia R-SUC-01 [ENLACE_CORE_VALIDADO]"
+        parents: "interface GigabitEthernet0/0"
+        match: line
+
+- name: Fase 3 - Recolectar evidencias POST-CAMBIO en dispositivos de red
+  hosts: routers_cisco:switches_cisco
+  gather_facts: no
+  tasks:
+    - name: Asegurar directorio evidencias/post_cambio en el nodo de control
+      ansible.builtin.file:
+        path: "{{ playbook_dir }}/../evidencias/post_cambio"
+        state: directory
+        mode: "0755"
+      run_once: true
+      delegate_to: localhost
+
+    - name: POST - Obtener configuracion en ejecucion (running-config)
+      cisco.ios.ios_command:
+        commands: "show running-config"
+      register: post_running
+
+    - name: POST - Guardar running-config en evidencias/post_cambio
+      ansible.builtin.copy:
+        content: "{{ post_running.stdout[0] }}"
+        dest: "{{ playbook_dir }}/../evidencias/post_cambio/{{ inventory_hostname }}-running.cfg"
+        mode: "0644"
+      delegate_to: localhost
+
+    - name: POST - Obtener show ip interface brief
+      cisco.ios.ios_command:
+        commands: "show ip interface brief"
+      register: post_ip_int
+
+    - name: POST - Guardar show ip interface brief
+      ansible.builtin.copy:
+        content: "{{ post_ip_int.stdout[0] }}"
+        dest: "{{ playbook_dir }}/../evidencias/post_cambio/{{ inventory_hostname }}-ip_int.txt"
+        mode: "0644"
+      delegate_to: localhost
+
+    - name: POST - Obtener show vlan brief (switches)
+      cisco.ios.ios_command:
+        commands: "show vlan brief"
+      register: post_vlan
+      when: "'switches_cisco' in group_names"
+
+    - name: POST - Guardar show vlan brief (switches)
+      ansible.builtin.copy:
+        content: "{{ post_vlan.stdout[0] }}"
+        dest: "{{ playbook_dir }}/../evidencias/post_cambio/{{ inventory_hostname }}-vlan.txt"
+        mode: "0644"
+      when: "'switches_cisco' in group_names"
+      delegate_to: localhost
+
+    - name: POST - Obtener show interfaces trunk (switches)
+      cisco.ios.ios_command:
+        commands: "show interfaces trunk"
+      register: post_trunk
+      when: "'switches_cisco' in group_names"
+
+    - name: POST - Guardar show interfaces trunk (switches)
+      ansible.builtin.copy:
+        content: "{{ post_trunk.stdout[0] }}"
+        dest: "{{ playbook_dir }}/../evidencias/post_cambio/{{ inventory_hostname }}-trunk.txt"
+        mode: "0644"
+      when: "'switches_cisco' in group_names"
+      delegate_to: localhost
+
+    - name: POST - Obtener show ip route (routers)
+      cisco.ios.ios_command:
+        commands: "show ip route"
+      register: post_routes
+      when: "'routers_cisco' in group_names"
+
+    - name: POST - Guardar show ip route (routers)
+      ansible.builtin.copy:
+        content: "{{ post_routes.stdout[0] }}"
+        dest: "{{ playbook_dir }}/../evidencias/post_cambio/{{ inventory_hostname }}-routes.txt"
+        mode: "0644"
+      when: "'routers_cisco' in group_names"
+      delegate_to: localhost

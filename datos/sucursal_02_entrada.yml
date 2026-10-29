@@ -1,0 +1,20 @@
+---
+# Archivo de entrada de diseño de red - Sucursal 02
+sede: "Sucursal 02"
+bloque_disponible: "10.20.0.0/23"
+
+requerimientos_usuarios:
+  - vlan_id: 10
+    nombre: "ADMINISTRACION"
+    dispositivos_requeridos: 50
+    tipo: "Usuarios administrativos"
+
+  - vlan_id: 20
+    nombre: "OPERACION"
+    dispositivos_requeridos: 25
+    tipo: "Usuarios operativos"
+
+  - vlan_id: 99
+    nombre: "GESTION"
+    dispositivos_requeridos: 10
+    tipo: "Gestion de red e infraestructura"

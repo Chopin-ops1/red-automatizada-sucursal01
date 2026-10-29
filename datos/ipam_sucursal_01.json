@@ -1,0 +1,61 @@
+{
+  "_descripcion": "Exportacion de datos desde plataforma IPAM / CMDB para Sucursal 01",
+  "sede": "Sucursal 01",
+  "fecha_extraccion": "2026-10-29T10:00:00Z",
+  "dispositivos": [
+    {
+      "nombre": "R-SUC-01",
+      "funcion": "Enrutamiento entre VLAN y puerta de enlace",
+      "direccion_gestion": "192.168.99.1",
+      "estado_esperado": "activo"
+    },
+    {
+      "nombre": "SW-SUC-01-CORE",
+      "funcion": "Concentracion de VLAN, puertos de acceso y enlaces troncales",
+      "direccion_gestion": "192.168.99.2",
+      "estado_esperado": "activo"
+    },
+    {
+      "nombre": "SW-SUC-01-ACC1",
+      "funcion": "Extension de la red hacia equipos de acceso",
+      "direccion_gestion": "192.168.99.3",
+      "estado_esperado": "activo"
+    },
+    {
+      "nombre": "SW-SUC-01-ACC2",
+      "funcion": "Segundo switch de acceso proyectado",
+      "direccion_gestion": "192.168.99.4",
+      "estado_esperado": "planificado"
+    }
+  ],
+  "redes_vlan": [
+    {
+      "vlan_id": 10,
+      "nombre": "USUARIOS_VLAN10",
+      "red": "192.168.10.0/24",
+      "gateway": "192.168.10.1",
+      "proposito": "Usuarios de planta VLAN 10"
+    },
+    {
+      "vlan_id": 20,
+      "nombre": "USUARIOS_VLAN20",
+      "red": "192.168.20.0/24",
+      "gateway": "192.168.20.1",
+      "proposito": "Usuarios de planta VLAN 20"
+    },
+    {
+      "vlan_id": 99,
+      "nombre": "GESTION",
+      "red": "192.168.99.0/24",
+      "gateway": "192.168.99.1",
+      "proposito": "Red de gestion y administracion OOB"
+    },
+    {
+      "vlan_id": 30,
+      "nombre": "INVITADOS",
+      "red": "192.168.30.0/24",
+      "gateway": "192.168.30.1",
+      "proposito": "Segmento de visitantes (registrado en IPAM pero no desplegado en equipos)"
+    }
+  ]
+}
